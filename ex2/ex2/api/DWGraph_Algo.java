@@ -32,7 +32,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;*/
 
 public class DWGraph_Algo implements dw_graph_algorithms {
-	
+
 	public directed_weighted_graph gr;
 	int nodeCounter = 0;
 	HashMap<node_data, node_data> fathers;
@@ -134,9 +134,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 					nodeCounter++;
 					nex.setInfo("visiting");
 				}
-
 			}
-
 		}
 	}
 
@@ -147,13 +145,28 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		else if (gr.edgeSize() < gr.nodeSize() - 1) return false;
 		else {
 			Iterator<node_data> ite = gr.getV().iterator();
+			node_data src_node = ite.next();
 			nodeCounter = 0;
-			ite = gr.getV().iterator();
-			if (ite.hasNext()) {
-				BFS(ite.next());
+			BFS(src_node);
+			if (nodeCounter != gr.nodeSize()) return false;
+			else
+			{
+				Iterator<node_data> ite1 = ((DWGraph_DS) gr).getDestVertices().iterator();
+				while (ite1.hasNext())
+				{
+					node_data node = ite.next();
+					if (node!=src_node)
+					{
+						nodeCounter = 0;
+						BFS(node);
+						if (src_node.getInfo()!="visited")
+						{
+							return false;
+						}
+					}
+				}
 			}
-			if (nodeCounter == gr.nodeSize()) return true;
-			else return false;
+			return true;
 		}
 	}
 
@@ -373,7 +386,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
 				init(g_copy); // init graph to be the new graph
 				file_.close(); //closing file
-			} 
+			}
 			catch (FileNotFoundException e2)
 			{
 				e2.printStackTrace();
