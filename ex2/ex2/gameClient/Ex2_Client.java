@@ -93,10 +93,10 @@ public class Ex2_Client implements Runnable{
 	 */
 	private static int nextNode(directed_weighted_graph g, int src) {
 
-		double closest_node_dist=0;
+		double closest_node_dist=100;
 		//Collection<edge_data> ee = g.getE(src);
 		dw_graph_algorithms gr= new DWGraph_Algo();
-		//gr.init(g);
+		gr.init(g);
 		List<node_data> shp= new ArrayList<node_data>();
 		for(CL_Pokemon po:cl_fs){
 			if(closest_node_dist > gr.shortestPathDist(src, po.get_edge().getDest())){
