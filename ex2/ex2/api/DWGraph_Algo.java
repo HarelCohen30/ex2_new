@@ -211,7 +211,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
             while (ite.hasNext()) {
                 NodeData n1 = (NodeData) iteN.next();
                 JSONArray list = new JSONArray();
-
                 list.put(n.getKey());
                 try {
 					list.put(n1.getWeight());
@@ -241,7 +240,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
-
         try (FileWriter f = new FileWriter(file)) {
             f.write(obj.toString());
 //           x=new Formatter(file);
@@ -263,7 +261,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 //            x.format("%n", "");
 //        }
         x.close();
-
         return true;
     }
 	 */
@@ -406,7 +403,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         File f = new File(file);
         JSONParser parser = new JSONParser();
         directed_weighted_graph G = new DWGraph_DS();
-
         Object obj = new Object();
         try {
             obj = parser.parse(new FileReader(f));
@@ -422,19 +418,15 @@ public class DWGraph_Algo implements dw_graph_algorithms {
             JSONObject jsObj = (JSONObject) obj;
             edge_data[] edges = (edge_data[]) jsObj.get("Edges");
             node_data[] nodes = (node_data[]) jsObj.get("nodes");
-
             for (node_data i : nodes) {
                 G.addNode(i);
             }
             for (edge_data i : edges) {
                 G.connect(i.getSrc(), i.getDest(), i.getWeight());
             }
-
 //        String ln=scan.nextLine();
 //        String[] el=ln.split(",");
-
             // int mcCounter=Integer.parseInt(el[5]);
-
             //       for(node_data i: nodes) {
 //            ln=scan.nextLine();
 //            el=ln.split(",");
@@ -451,11 +443,9 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 //        }
             //       scan.close();
             this.gr = G;
-
             if (((DWGraph_DS) gr).getSrcVertices().size() == G.nodeSize() && ((DWGraph_DS) gr).edgeCounter == G.edgeSize() && ((DWGraph_DS) gr).mc == G.getMC()) {
                 return true;
             } else return false;
-
     }*/
 
 }

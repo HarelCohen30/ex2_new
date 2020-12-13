@@ -1,9 +1,13 @@
 package gameClient;
 
 import Server.Game_Server_Ex2;
+import api.DWGraph_Algo;
 import api.directed_weighted_graph;
+import api.dw_graph_algorithms;
 import api.edge_data;
 import api.game_service;
+import api.node_data;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,27 +19,29 @@ import java.util.List;
 public class Ex2_Client implements Runnable{
 	private static MyFrame _win;
 	private static Arena _ar;
+	private static ArrayList<CL_Pokemon> cl_fs = new ArrayList<CL_Pokemon>();
+
 	public static void main(String[] a) {
 		Thread client = new Thread(new Ex2_Client());
 		client.start();
 	}
-	
+
 	@Override
 	public void run() {
-		int scenario_num = 1;
+		int scenario_num = 10;
 		game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
-	//	int id = 999;
-	//	game.login(id);
+		//int id = 999;
+		//game.login(id);
 		String g = game.getGraph();
 		String pks = game.getPokemons();
 		directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
 		init(game);
-		
+
 		game.startGame();
 		_win.setTitle("Ex2 - OOP: (NONE trivial Solution) "+game.toString());
 		int ind=0;
 		long dt=100;
-		
+
 		while(game.isRunning()) {
 			moveAgants(game, gg);
 			try {
@@ -48,11 +54,10 @@ public class Ex2_Client implements Runnable{
 			}
 		}
 		String res = game.toString();
-
 		System.out.println(res);
 		System.exit(0);
 	}
-	/** 
+	/**
 	 * Moves each of the agents along the edge,
 	 * in case the agent is on a node the next destination (next edge) is chosen (randomly).
 	 * @param game
@@ -87,7 +92,21 @@ public class Ex2_Client implements Runnable{
 	 * @return
 	 */
 	private static int nextNode(directed_weighted_graph g, int src) {
-		int ans = -1;
+
+		double closest_node_dist=0;
+		//Collection<edge_data> ee = g.getE(src);
+		dw_graph_algorithms gr= new DWGraph_Algo();
+		//gr.init(g);
+		List<node_data> shp= new ArrayList<node_data>();
+		for(CL_Pokemon po:cl_fs){
+			if(closest_node_dist > gr.shortestPathDist(src, po.get_edge().getDest())){
+				closest_node_dist=gr.shortestPathDist(src, po.get_edge().getDest());
+				shp=gr.shortestPath(src,po.get_edge().getDest());
+			}
+		}
+		return shp.get(0).getKey();
+
+		/*int ans = -1;
 		Collection<edge_data> ee = g.getE(src);
 		Iterator<edge_data> itr = ee.iterator();
 		int s = ee.size();
@@ -95,8 +114,10 @@ public class Ex2_Client implements Runnable{
 		int i=0;
 		while(i<r) {itr.next();i++;}
 		ans = itr.next().getDest();
-		return ans;
+		System.out.println((itr.next().getDest()));
+		return ans;*/
 	}
+
 	private void init(game_service game) {
 		String g = game.getGraph();
 		String fs = game.getPokemons();
@@ -109,7 +130,7 @@ public class Ex2_Client implements Runnable{
 		_win.setSize(1000, 700);
 		_win.update(_ar);
 
-	
+
 		_win.show();
 		String info = game.toString();
 		JSONObject line;
@@ -120,14 +141,14 @@ public class Ex2_Client implements Runnable{
 			System.out.println(info);
 			System.out.println(game.getPokemons());
 			int src_node = 0;  // arbitrary node, you should start at one of the pokemon
-			ArrayList<CL_Pokemon> cl_fs = Arena.json2Pokemons(game.getPokemons());
+			cl_fs = Arena.json2Pokemons(game.getPokemons());
 			for(int a = 0;a<cl_fs.size();a++) { Arena.updateEdge(cl_fs.get(a),gg);}
 			for(int a = 0;a<rs;a++) {
 				int ind = a%cl_fs.size();
 				CL_Pokemon c = cl_fs.get(ind);
 				int nn = c.get_edge().getDest();
 				if(c.getType()<0 ) {nn = c.get_edge().getSrc();}
-				
+
 				game.addAgent(nn);
 			}
 		}
