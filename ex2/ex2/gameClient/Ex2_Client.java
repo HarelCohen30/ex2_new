@@ -1,12 +1,7 @@
 package gameClient;
 
 import Server.Game_Server_Ex2;
-import api.DWGraph_Algo;
-import api.directed_weighted_graph;
-import api.dw_graph_algorithms;
-import api.edge_data;
-import api.game_service;
-import api.node_data;
+import api.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,35 +23,44 @@ public class Ex2_Client implements Runnable{
 
 	@Override
 	public void run() {
-		int scenario_num = 10;
-		game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
-		//int id = 999;
-		//game.login(id);
-		String g = game.getGraph();
-		String pks = game.getPokemons();
-		directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
-		init(game);
 
-		game.startGame();
-		_win.setTitle("Ex2 - OOP: (NONE trivial Solution) "+game.toString());
-		int ind=0;
-		long dt=100;
+        int scenario_num = 0;
+      //  while (scenario_num < 24) {
+            game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
+            //int id = 999;
+            //game.login(id);
+//        game_service game1 = new Game_ServerEx2();
+//        game1= (Game_ServerEx2) game;
+//        game1.level(scenario_num);
+            String g = game.getGraph();
+            String pks = game.getPokemons();
+            directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
+            init(game);
 
-		while(game.isRunning()) {
-			moveAgants(game, gg);
-			try {
-				if(ind%1==0) {_win.repaint();}
-				Thread.sleep(dt);
-				ind++;
-			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		String res = game.toString();
-		System.out.println(res);
-		System.exit(0);
-	}
+            game.startGame();
+            _win.setTitle("Ex2 - OOP: (NONE trivial Solution) " + game.toString());
+            int ind = 0;
+            long dt = 100;
+
+            while (game.isRunning()) {
+                moveAgants(game, gg);
+                try {
+                    if (ind % 1 == 0) {
+                        _win.repaint();
+                    }
+                    Thread.sleep(dt);
+                    ind++;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            String res = game.toString();
+            System.out.println(res);
+            System.exit(0);
+        //    scenario_num++;
+        }
+
+    
 	/**
 	 * Moves each of the agents along the edge,
 	 * in case the agent is on a node the next destination (next edge) is chosen (randomly).

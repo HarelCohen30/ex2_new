@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import Server.Game_Server_Ex2;
@@ -23,7 +24,8 @@ public class Game_ServerEx2 implements game_service {
 	long start_game_time;
 	long end_game_time = 0;
 	//private game_service game;
-
+	private int num_of_agents;
+	private int level;
 	public Game_ServerEx2() {
 		////////////time_of_game=///////////////////////////
 		//game = Game_Server_Ex2.getServer(11);
@@ -37,7 +39,7 @@ public class Game_ServerEx2 implements game_service {
 
 		String file = new String();
 
-		//Server.Game_Server_Ex2.getServer(1);
+		Server.Game_Server_Ex2.getServer(level);
 
 		if (graph.save(file)) {
 			return file;
@@ -79,14 +81,19 @@ public class Game_ServerEx2 implements game_service {
 	@Override
 	public boolean addAgent(int start_node) {
 
+		boolean success = true;
 		Iterator<CL_Pokemon> p = pokemons.iterator();
-		while (p.hasNext()) {
+
+		int i=0;
+		while (i<amountOfAgents())
+		{
 			CL_Pokemon pikachu = p.next();
 			int src = pikachu.get_edge().getSrc();
-			CL_Agent agent = new CL_Agent((directed_weighted_graph) graph, src);
+			CL_Agent agent = new CL_Agent((directed_weighted_graph) graph,src);
+			agents.add(agent);
+			i++;
 		}
-
-		return true;
+		return success;
 	}
 
 	@Override
@@ -143,4 +150,19 @@ public class Game_ServerEx2 implements game_service {
 		}
 		return false;
 	}
+	public int amountOfAgents() {
+		int n=0;
+		JSONArray jsonServerReturn = (JSONArray) Game_Server_Ex2.getServer(level);
+		try {
+			n= (int) jsonServerReturn.get(jsonServerReturn.length() - 1);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return n;
+	}
+
+	public void level(int level){
+		this.level=level;
+	}
+
 }
