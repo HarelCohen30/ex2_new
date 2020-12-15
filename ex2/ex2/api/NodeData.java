@@ -1,6 +1,6 @@
 package api;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,8 +12,8 @@ public class NodeData implements node_data,Comparable<node_data> {
 	private int tag;
 	//keyCounter to insure uniqeness of each key;
 	private static int keyCounter = 0;
-	private HashMap<Integer, node_data> neighbor = new HashMap<Integer, node_data>();
-	private HashMap<Integer, node_data> weights = new HashMap<Integer, node_data>();
+	private HashMap<Integer, node_data> srcNeighbor = new HashMap<Integer, node_data>();
+	private HashMap<Integer, node_data> destNeighbor = new HashMap<Integer, node_data>();
 	private double weight;
 	private geo_location pos = new GeoLocation();
 
@@ -76,32 +76,46 @@ public class NodeData implements node_data,Comparable<node_data> {
 
 
 	public Collection<node_data> getNi() {
-		return neighbor.values();
+		return srcNeighbor.values();
+	}
+	public Collection<node_data> getDestNi() {
+		return destNeighbor.values();
 	}
 
 
 	public boolean hasNi(int key) {
-		if (neighbor.containsKey(key)) return true;
+		if (srcNeighbor.containsKey(key)) return true;
+		if (destNeighbor.containsKey(key)) return true;
 		return false;
 	}
 
 
 	public void addNi(node_data t) {
 		if (t != null) {
-			neighbor.put(t.getKey(), t);
+			srcNeighbor.put(t.getKey(), t);
+		}
+	}
+	public void addDestNi(node_data t) {
+		if (t != null) {
+			destNeighbor.put(t.getKey(), t);
 		}
 	}
 
 	public void removeNode(node_data node) {
 		if (hasNi(node.getKey())) {
-			neighbor.remove(node.getKey());
+			srcNeighbor.remove(node.getKey());
+		}
+	}
+	public void removeDestNode(node_data node) {
+		if (hasNi(node.getKey())) {
+			destNeighbor.remove(node.getKey());
 		}
 	}
 
 	@Override
-		public int compareTo(node_data node) {
-			if (node.getTag() > this.tag) return 1;
-			else if(node.getTag() < this.tag) return -1;
-			else return 0;
+	public int compareTo(node_data node) {
+		if (node.getTag() > this.tag) return 1;
+		else if(node.getTag() < this.tag) return -1;
+		else return 0;
 	}
 }

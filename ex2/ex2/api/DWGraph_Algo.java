@@ -59,7 +59,8 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 	public directed_weighted_graph copy() {
 		Collection<node_data> NewGraphSrcVertices = ((DWGraph_DS) gr).getSrcVertices();
 		Collection<node_data> NewGraphDestVertices = ((DWGraph_DS) gr).getDestVertices();
-		directed_weighted_graph NewGraph = new DWGraph_DS(NewGraphSrcVertices, NewGraphDestVertices);
+		Collection<edge_data> edges = ((DWGraph_DS) gr).edges;
+		directed_weighted_graph NewGraph = new DWGraph_DS(NewGraphSrcVertices, NewGraphDestVertices,edges);
 		return NewGraph;
 	}
 
@@ -73,13 +74,13 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		Iterator<node_data> ite = gr.getV().iterator();
 		while (ite.hasNext()) {
 			node_data N = ite.next();
-			N.setTag(intinf);
+			N.setWeight(intinf);
 			N.setInfo("unvisited");
 		}
 		//initializes the priority queue and strart first node
 		Queue<node_data> que = new PriorityQueue<node_data>();
 		node.setInfo("visited");
-		node.setTag(0);
+		node.setWeight(0);
 		que.add(node);
 		nodeCounter++;
 		//standard algo for going through all nodes in graph
@@ -97,10 +98,10 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 					nex.setInfo("visiting");
 				}
 				//resets tags if smaller dist
-			//	if (nex.getTag() > top.getTag() + (gr.getEdge(top.getKey(), nex.getKey()).getWeight())) {
-				if (nex.getTag() > top.getTag() + (nex.getWeight())) {
-					int n = (int)nex.getWeight() + top.getTag();
-					nex.setTag(n);
+					if (nex.getWeight() > top.getWeight() + (gr.getEdge(top.getKey(), nex.getKey()).getWeight())) {
+				//if (nex.getTag() > top.getTag() + (nex.getWeight())) {
+					double n = top.getWeight() + (gr.getEdge(top.getKey(), nex.getKey()).getWeight()) + top.getWeight();
+					nex.setWeight(n);
 					fathers.put(nex, top);
 				}
 			}
