@@ -14,11 +14,12 @@ public class EdgeData implements edge_data {
 		//////////////////////////////
 		//////////////////////////////
 	}
-	public EdgeData(int src,int dest) {
+	public EdgeData(int src,int dest,double weight) {
 		tag=0;
 		info="";
 		this.src=src;
 		this.dest=dest;
+		this.weight= weight;
 	}
 
 	public int getSrc() {

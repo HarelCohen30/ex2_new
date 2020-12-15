@@ -9,7 +9,11 @@ import gameClient.util.Range;
 import gameClient.util.Range2D;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,12 +24,41 @@ import java.util.List;
  * code and not to take it "as is".
  *
  */
-public class MyFrame extends JFrame{
+public class MyFrame extends JFrame implements ActionListener{
 	private int _ind;
 	private Arena _ar;
 	private gameClient.util.Range2Range _w2f;
+
 	MyFrame(String a) {
 		super(a);
+		this.setTitle("pokemon game!");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(true);
+		this.setVisible(true);
+	//	this.getContentPane().setBackground(new Color(123,50,250));
+
+
+		JButton button = new JButton("submit");
+		//ActionListener clicked= new ActionEvent();
+		button.addActionListener(this);
+
+		Border border= BorderFactory.createLineBorder(Color.darkGray,3);
+
+		JLabel userid = new JLabel("Enter your id:");
+		this.add(userid);
+		userid.setHorizontalTextPosition(JLabel.CENTER);
+		userid.setVerticalTextPosition(JLabel.CENTER);
+		userid.setForeground(Color.gray);
+		userid.setBackground(Color.white);
+		userid.setOpaque(true);
+		userid.setBorder(border);
+		userid.setHorizontalAlignment(JLabel.CENTER);
+		userid.setVerticalAlignment(JLabel.CENTER);
+		userid.setBounds(100,100,100,100);
+		userid.add(button);
+
+		this.setLayout(null);
+	//	this.pack();
 		int _ind = 0;
 	}
 	public void update(Arena ar) {
@@ -40,16 +73,29 @@ public class MyFrame extends JFrame{
 		directed_weighted_graph g = _ar.getGraph();
 		_w2f = Arena.w2f(g,frame);
 	}
-	public void paint(Graphics g) {
+	public void paintComponents(Graphics g)
+	{
+		super.paintComponents(g);
 		int w = this.getWidth();
 		int h = this.getHeight();
-		g.clearRect(0, 0, w, h);
-	//	updateFrame();
-		drawPokemons(g);
-		drawGraph(g);
-		drawAgants(g);
-		drawInfo(g);
-		
+
+		ImageIcon image = new ImageIcon("forest.jpg");
+		//BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+		Image buffer_image;
+		Graphics buffer_graphics;
+		// Create a new "canvas"
+		buffer_image = createImage(w,h);
+	//	buffer_image = createImage("forest.jpg");
+		buffer_graphics=buffer_image.getGraphics();
+		paintComponents(buffer_graphics);
+
+
+		// Draw on the new "canvas"
+
+		// "Switch" the old "canvas" for the new one
+
+		g.drawImage(buffer_image, 0, 0, this);
+
 	}
 	private void drawInfo(Graphics g) {
 		List<String> str = _ar.get_info();
@@ -84,7 +130,9 @@ public class MyFrame extends JFrame{
 			CL_Pokemon f = itr.next();
 			Point3D c = f.getLocation();
 			int r=10;
-			g.setColor(Color.green);
+			ImageIcon pickachu=new ImageIcon("RsChPan.jpg");
+			g.drawImage(pickachu.getImage(),2,20,pickachu.getImageObserver());
+			//g.setColor(Color.green);
 			if(f.getType()<0) {g.setColor(Color.orange);}
 			if(c!=null) {
 
@@ -96,10 +144,12 @@ public class MyFrame extends JFrame{
 		}
 		}
 	}
-	private void drawAgants(Graphics g) {
+	private void drawAgents(Graphics g) {
 		List<CL_Agent> rs = _ar.getAgents();
 	//	Iterator<OOP_Point3D> itr = rs.iterator();
-		g.setColor(Color.red);
+	//	g.setColor(Color.red);
+		ImageIcon ash=new ImageIcon("11276.jpg");
+		g.drawImage(ash.getImage(),2,20,ash.getImageObserver());
 		int i=0;
 		while(rs!=null && i<rs.size()) {
 			geo_location c = rs.get(i).getLocation();
@@ -124,7 +174,13 @@ public class MyFrame extends JFrame{
 		geo_location d = gg.getNode(e.getDest()).getLocation();
 		geo_location s0 = this._w2f.world2frame(s);
 		geo_location d0 = this._w2f.world2frame(d);
-		g.drawLine((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y());
+		g.drawArc((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y(),20,322);
 	//	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		float id;
+		int level;
 	}
 }

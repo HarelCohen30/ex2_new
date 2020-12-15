@@ -13,6 +13,7 @@ public class NodeData implements node_data,Comparable<node_data> {
 	//keyCounter to insure uniqeness of each key;
 	private static int keyCounter = 0;
 	private HashMap<Integer, node_data> neighbor = new HashMap<Integer, node_data>();
+	private HashMap<Integer, node_data> weights = new HashMap<Integer, node_data>();
 	private double weight;
 	private geo_location pos = new GeoLocation();
 
@@ -100,7 +101,7 @@ public class NodeData implements node_data,Comparable<node_data> {
 	@Override
 		public int compareTo(node_data node) {
 			if (node.getTag() > this.tag) return 1;
-			if (node.getTag() < this.tag) return -1;
+			else if(node.getTag() < this.tag) return -1;
 			else return 0;
 	}
 }

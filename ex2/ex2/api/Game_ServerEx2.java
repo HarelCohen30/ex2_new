@@ -37,9 +37,10 @@ public class Game_ServerEx2 implements game_service {
 	@Override
 	public String getGraph() {
 
-		String file = new String();
 
-		Server.Game_Server_Ex2.getServer(level);
+		JSONObject f = (JSONObject) Game_Server_Ex2.getServer(level);
+		String file = f.toString();
+
 
 		if (graph.save(file)) {
 			return file;

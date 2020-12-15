@@ -12,6 +12,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 	private HashMap<Integer, node_data> dest_vertices;
 	public Collection<node_data> GraphSrcVertices;
 	public Collection<node_data> GraphDestVertices;
+	public Collection<edge_data> edges;
 	int nodeCounter = 0;
 	int edgeCounter=0;
 	int mc = 0;
@@ -22,6 +23,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 		this.dest_vertices = new HashMap<Integer, node_data>();
 		this.GraphSrcVertices = new ArrayList<node_data>();
 		this.GraphDestVertices = new ArrayList<node_data>();
+		this.edges=new ArrayList<edge_data>();
 	}
 	
 	//Maurice, Please check this constructor again/////////////////////////////
@@ -31,6 +33,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 		this.GraphDestVertices = NewGraphDestVertices;
 		this.src_vertices = new HashMap<Integer, node_data>();
 		this.dest_vertices = new HashMap<Integer, node_data>();
+		this.edges=new ArrayList<edge_data>();
 		for (node_data verts : GraphSrcVertices) {
 			addNode(verts);
 		}
@@ -43,6 +46,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 			while(ite.hasNext()) {
 				node_data N=ite.next();
 				connect(verts.getKey(),N.getKey(),N.getWeight());
+
 			}
 		}
 	}
@@ -60,6 +64,9 @@ public class DWGraph_DS implements directed_weighted_graph {
 		if(hasEdge(src,dest))
 		{
 			edge_data edge=new EdgeData(src,dest);
+//			edge.setInfo();
+//			edge.setWeight(getNode(src));
+
 			return edge;
 		}
 		else return null;
@@ -80,6 +87,10 @@ public class DWGraph_DS implements directed_weighted_graph {
 		if (ForCountNodes)//the node added to graph
 			nodeCounter++;
 	}
+	public void addNode(int key)
+	{
+		addNode(new NodeData(key));
+	}
 
 	public void connect(int src, int dest, double w) {
 		if(src_vertices.containsKey(src) && dest_vertices.containsKey(dest) && src!=dest ){
@@ -89,11 +100,11 @@ public class DWGraph_DS implements directed_weighted_graph {
 
 				edgeCounter++;
 				mc++;
-			}	
-			else {
-				EdgeData edge = new EdgeData(src,dest);
-				edge.setWeight(w);
 			}
+				EdgeData edge = new EdgeData(src,dest,w);
+				edge.setWeight(w);
+				edges.add(edge);
+
 		}
 	}
 
@@ -112,7 +123,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 		while (iter.hasNext())
 		{
 			node_data b = iter.next();
-			edge_data edge = new EdgeData(node_id,b.getKey());
+			edge_data edge = new EdgeData(node_id,b.getKey(),2.0);
 			coll.add(edge);
 		}
 		return coll;

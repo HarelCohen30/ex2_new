@@ -79,8 +79,8 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		//initializes the priority queue and strart first node
 		Queue<node_data> que = new PriorityQueue<node_data>();
 		node.setInfo("visited");
-		que.add(node);
 		node.setTag(0);
+		que.add(node);
 		nodeCounter++;
 		//standard algo for going through all nodes in graph
 		while (!que.isEmpty()) {
@@ -88,7 +88,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 			top.setInfo("visited");
 			Collection<node_data> Nis = new ArrayList<node_data>();
 			//gr.getV(top.getKey());
-			// Nis = ((NodeData)top).getNi();
+			Nis = ((NodeData)top).getNi();
 			for (node_data nex : Nis) {
 
 				if (nex.getInfo().equals("unvisited")) {
@@ -97,8 +97,9 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 					nex.setInfo("visiting");
 				}
 				//resets tags if smaller dist
-				if (nex.getTag() > top.getTag() + (gr.getEdge(top.getKey(), nex.getKey()).getTag())) {
-					int n = gr.getEdge(top.getKey(), nex.getKey()).getTag() + top.getTag();
+			//	if (nex.getTag() > top.getTag() + (gr.getEdge(top.getKey(), nex.getKey()).getWeight())) {
+				if (nex.getTag() > top.getTag() + (nex.getWeight())) {
+					int n = (int)nex.getWeight() + top.getTag();
 					nex.setTag(n);
 					fathers.put(nex, top);
 				}
@@ -140,7 +141,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
 	@Override
 	public boolean isConnected() {
-		if (gr.nodeSize() == 1) return true;
+		if (gr.nodeSize() <= 1) return true;
 		else if (gr.nodeSize() == 2 && gr.edgeSize() == 1) return true;
 		else if (gr.edgeSize() < gr.nodeSize() - 1) return false;
 		else {

@@ -60,7 +60,7 @@ public class Ex2_Client implements Runnable{
         //    scenario_num++;
         }
 
-    
+
 	/**
 	 * Moves each of the agents along the edge,
 	 * in case the agent is on a node the next destination (next edge) is chosen (randomly).
