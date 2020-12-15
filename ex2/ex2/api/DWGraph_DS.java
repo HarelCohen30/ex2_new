@@ -123,7 +123,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 		while (iter.hasNext())
 		{
 			node_data b = iter.next();
-			edge_data edge = new EdgeData(node_id,b.getKey(),2.0);
+			edge_data edge = new EdgeData(node_id,b.getKey(),4.0);
 			coll.add(edge);
 		}
 		return coll;
