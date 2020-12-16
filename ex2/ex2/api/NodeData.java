@@ -85,7 +85,7 @@ public class NodeData implements node_data,Comparable<node_data> {
 
 	public boolean hasNi(int key) {
 		if (srcNeighbor.containsKey(key)) return true;
-		if (destNeighbor.containsKey(key)) return true;
+		//if (destNeighbor.containsKey(key)) return true;
 		return false;
 	}
 

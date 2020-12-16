@@ -57,10 +57,9 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
 	@Override
 	public directed_weighted_graph copy() {
-		Collection<node_data> NewGraphSrcVertices = ((DWGraph_DS) gr).getSrcVertices();
-		Collection<node_data> NewGraphDestVertices = ((DWGraph_DS) gr).getDestVertices();
+		Collection<node_data> NewGraphVertices = ((DWGraph_DS) gr).getV();
 		Collection<edge_data> edges = ((DWGraph_DS) gr).edges;
-		directed_weighted_graph NewGraph = new DWGraph_DS(NewGraphSrcVertices, NewGraphDestVertices,edges);
+		directed_weighted_graph NewGraph = new DWGraph_DS(NewGraphVertices,edges);
 		return NewGraph;
 	}
 
@@ -98,9 +97,9 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 					nex.setInfo("visiting");
 				}
 				//resets tags if smaller dist
-					if (nex.getWeight() > top.getWeight() + (gr.getEdge(top.getKey(), nex.getKey()).getWeight())) {
-				//if (nex.getTag() > top.getTag() + (nex.getWeight())) {
-					double n = top.getWeight() + (gr.getEdge(top.getKey(), nex.getKey()).getWeight()) + top.getWeight();
+				if (nex.getWeight() > top.getWeight() + (gr.getEdge(top.getKey(), nex.getKey()).getWeight())) {
+					//if (nex.getTag() > top.getTag() + (nex.getWeight())) {
+					double n = top.getWeight() + (gr.getEdge(top.getKey(), nex.getKey()).getWeight());
 					nex.setWeight(n);
 					fathers.put(nex, top);
 				}
@@ -128,7 +127,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 			node_data top = que.poll();
 			top.setInfo("visited");
 			Collection<node_data> Nis = new ArrayList<node_data>();
-			//gr.getV(top.getKey());
+			Nis = ((NodeData)top).getNi();
 			for (node_data nex : Nis) {
 
 				if (nex.getInfo().equals("unvisited")) {
@@ -153,7 +152,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 			if (nodeCounter != gr.nodeSize()) return false;
 			else
 			{
-				Iterator<node_data> ite1 = ((DWGraph_DS) gr).getDestVertices().iterator();
+				Iterator<node_data> ite1 = ReversGraph().getV().iterator();
 				while (ite1.hasNext())
 				{
 					node_data node = ite.next();
@@ -172,13 +171,34 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		}
 	}
 
+	public directed_weighted_graph ReversGraph()
+	{
+		directed_weighted_graph reverse_graph = new DWGraph_DS();
+		Iterator<node_data> ite = gr.getV().iterator();
+		while(ite.hasNext())
+		{
+			node_data n = ite.next();
+			reverse_graph.addNode(n);
+		}
+		Iterator<edge_data> R_ite = ((DWGraph_DS) gr).getEdges().iterator();
+		while(R_ite.hasNext())
+		{
+			edge_data edge = R_ite.next();
+			int src = edge.getDest();
+			int dest = edge.getSrc();
+			double w = edge.getWeight();
+			reverse_graph.connect(src, dest, w);
+		}
+		return reverse_graph;
+	}
+
 	@Override
 	public double shortestPathDist(int src, int dest) {
 		if (src == dest) return 1;
 		nodeCounter = 0;
 
 		Dijkstra(gr.getNode(src));
-		return gr.getNode(dest).getTag();
+		return gr.getNode(dest).getWeight();
 	}
 
 	@Override
