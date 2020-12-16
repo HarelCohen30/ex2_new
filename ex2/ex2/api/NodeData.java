@@ -5,7 +5,7 @@ package api;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class NodeData implements node_data,Comparable<node_data> {
+public class NodeData implements node_data,Comparable<NodeData> {
 
 	private int key;
 	private String info;
@@ -34,7 +34,7 @@ public class NodeData implements node_data,Comparable<node_data> {
 	public NodeData(int key) {
 		tag = 0;
 		info = " ";
-		this.key = keyCounter;
+		this.key = key;
 		keyCounter++;
 	}
 
@@ -113,9 +113,18 @@ public class NodeData implements node_data,Comparable<node_data> {
 	}
 
 	@Override
-	public int compareTo(node_data node) {
-		if (node.getTag() > this.tag) return 1;
-		else if(node.getTag() < this.tag) return -1;
+	public int compareTo(NodeData node) {
+		if (node.getWeight() > this.weight) return 1;
+		else if(node.getWeight() < this.weight) return -1;
 		else return 0;
 	}
+
+
+	public void clearSrcNeighbor() {
+		srcNeighbor.clear();
+	}
+	public void clearDestNeighbor() {
+		destNeighbor.clear();
+	}
+
 }

@@ -63,7 +63,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return NewGraph;
 	}
 
-	public void Dijkstra(node_data node)// standard Dijkstra Algo. registers all tags of nodes in src branch of graph as dist from src.
+	public void Dijkstra(NodeData node)// standard Dijkstra Algo. registers all tags of nodes in src branch of graph as dist from src.
 	{
 
 		fathers.put(node, null);
@@ -77,10 +77,12 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 			N.setInfo("unvisited");
 		}
 		//initializes the priority queue and strart first node
-		Queue<node_data> que = new PriorityQueue<node_data>();
+		PriorityQueue<node_data> que = new PriorityQueue<node_data>();
 		node.setInfo("visited");
-		node.setWeight(0);
+		node.setWeight(0.0);
+		System.out.println(que.size());
 		que.add(node);
+		System.out.println(que.size());
 		nodeCounter++;
 		//standard algo for going through all nodes in graph
 		while (!que.isEmpty()) {
@@ -142,7 +144,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 	@Override
 	public boolean isConnected() {
 		if (gr.nodeSize() <= 1) return true;
-		else if (gr.nodeSize() == 2 && gr.edgeSize() == 1) return true;
+		else if (gr.nodeSize() == 2 && gr.edgeSize() == 2) return true;
 		else if (gr.edgeSize() < gr.nodeSize() - 1) return false;
 		else {
 			Iterator<node_data> ite = gr.getV().iterator();
@@ -196,15 +198,15 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 	public double shortestPathDist(int src, int dest) {
 		if (src == dest) return 1;
 		nodeCounter = 0;
-
-		Dijkstra(gr.getNode(src));
+		NodeData n= (NodeData)gr.getNode(src);
+		Dijkstra(n);
 		return gr.getNode(dest).getWeight();
 	}
 
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
 		Stack<node_data> st = new Stack<node_data>();
-		Dijkstra(gr.getNode(src));
+		Dijkstra((NodeData) gr.getNode(src));
 		node_data n = gr.getNode(dest);
 		while (n != null) {
 			st.add(n);

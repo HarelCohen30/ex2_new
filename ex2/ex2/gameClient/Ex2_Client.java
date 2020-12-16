@@ -24,7 +24,7 @@ public class Ex2_Client implements Runnable{
 	@Override
 	public void run() {
 
-        int scenario_num = 0;
+        int scenario_num = 1;
       //  while (scenario_num < 24) {
             game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
             //int id = 999;

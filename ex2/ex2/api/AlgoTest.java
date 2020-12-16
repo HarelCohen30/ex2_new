@@ -47,6 +47,7 @@ public class AlgoTest
         DWGraph_Algo A=new DWGraph_Algo();
         A.init(G);
         G.addNode(0);
+        G.getNode(0).setLocation(new GeoLocation(1,1,1));
         G.addNode(1);
         G.connect(0,1,3);
         G.connect(1,0,2);
@@ -160,6 +161,7 @@ public class AlgoTest
         {
             double W=Math.random()*10;
             G.connect(0,i,W);
+            G.connect(i,0,W);
             G.connect(1,i,W);
         }
         G.connect(1,0,1);
@@ -173,7 +175,11 @@ public class AlgoTest
         for(int i=0;i<Num;i++)
         {
             double W=Math.random()*10;
-            if(i+1<Num)G.connect(i,i+1, W);
+            if(i+1<Num)
+            {
+                G.connect(i,i+1, W);
+                G.connect(i+1,i, W);
+            }
         }
         G.connect(0,Num-1,1);
         return G;

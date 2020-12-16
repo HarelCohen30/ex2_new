@@ -33,24 +33,24 @@ public class DWGraph_DS implements directed_weighted_graph {
 	//constructor for the copy function creating a deep copy
 	public DWGraph_DS(Collection<node_data> NewGraphVertices, Collection<edge_data> edges) {
 		this.GraphVertices = NewGraphVertices;
-		//this.GraphDestVertices = NewGraphDestVertices;
 		this.vertices = new HashMap<Integer, node_data>();
-		//this.src_vertices = new HashMap<Integer, node_data>();
-		//this.dest_vertices = new HashMap<Integer, node_data>();
-		this.edges=edges;
-		for (node_data verts : GraphVertices) {
-			addNode(verts);
+//		for (node_data verts : GraphVertices) {
+//			addNode(verts);
+//		}
+		Iterator <node_data> ite1= GraphVertices.iterator();
+		while (ite1.hasNext()){
+			node_data n=ite1.next();
+			addNode(n);
 		}
-		for (node_data verts : GraphVertices)
+		this.edges=new ArrayList<edge_data>();
+		Iterator<edge_data> ite = edges.iterator();
+		while (ite.hasNext())
 		{
-			verts.setInfo(verts.getInfo());
-			verts.setTag(verts.getTag());
-			Collection<node_data> col = ((NodeData) verts).getNi();
-			Iterator<node_data> ite = col.iterator();
-			while(ite.hasNext()) {
-				node_data N=ite.next();
-				connect(verts.getKey(),N.getKey(),N.getWeight());
-			}
+			edge_data edge = ite.next();
+			int src = edge.getSrc();
+			int dest = edge.getDest();
+			double w = edge.getWeight();
+			connect(src, dest, w);
 		}
 	}
 
@@ -83,6 +83,8 @@ public class DWGraph_DS implements directed_weighted_graph {
 		boolean ForCountNodes = false;
 		if (!vertices.containsValue(n) && n != null)
 		{
+//			((NodeData) n).clearSrcNeighbor();
+//			((NodeData) n).clearDestNeighbor();
 			vertices.put(n.getKey(), n);
 			ForCountNodes = true;
 		}
@@ -92,7 +94,8 @@ public class DWGraph_DS implements directed_weighted_graph {
 
 	public void addNode(int key)
 	{
-		addNode(new NodeData(key));
+		node_data n = new NodeData(key);
+		addNode(n);
 	}
 
 	public void connect(int src, int dest, double w) {
@@ -144,18 +147,22 @@ public class DWGraph_DS implements directed_weighted_graph {
 			for (node_data neighbor : neighborsOfDel)
 			{
 				NodeData Ni = (NodeData) neighbor;
-				Ni.removeNode(nodeToRemove);
+				edge_data e = getEdge (nodeToRemove.getKey(),Ni.getKey());
+				Ni.removeDestNode(nodeToRemove);
+				edges.remove(e);
 				edgeCounter--;
 			}
-
 			Collection<node_data> neighborsOfDel2 = nodeToRemove.getDestNi();
 			for (node_data neighbor : neighborsOfDel2)
 			{
 				NodeData Ni = (NodeData) neighbor;
+				edge_data e = getEdge (Ni.getKey(),nodeToRemove.getKey());
 				Ni.removeNode(nodeToRemove);
+				edges.remove(e);
 				edgeCounter--;
 			}
 			vertices.remove(key);
+			nodeCounter--;
 			neighborsOfDel.clear();
 			neighborsOfDel2.clear();
 			mc++;
@@ -174,8 +181,6 @@ public class DWGraph_DS implements directed_weighted_graph {
 	/*public Collection<node_data> getDestVertices(){
 		if(dest_vertices!=null)
 		{
-
-
 			return dest_vertices.values();
 		}
 		return null;
@@ -207,8 +212,14 @@ public class DWGraph_DS implements directed_weighted_graph {
 
 	public boolean hasEdge(int src, int dest) {
 		if (vertices.get(src) == null || vertices.get(dest) == null || src == dest) return false;
-		if (((NodeData) vertices.get(src)).hasNi(dest))
-			return true;
+//		if (((NodeData) vertices.get(src)).hasNi(dest))
+		Iterator<edge_data> ed = edges.iterator();
+		while (ed.hasNext()){
+			edge_data edi=ed.next();
+			if(edi.getSrc()==src && edi.getDest()==dest){
+				return true;
+			}
+		}
 		return false;
 	}
 
