@@ -65,7 +65,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
 	public void Dijkstra(NodeData node)// standard Dijkstra Algo. registers all tags of nodes in src branch of graph as dist from src.
 	{
-
 		fathers.put(node, null);
 		//initializes all tags to infinity and set info to "unvisited"
 		double inf = Double.POSITIVE_INFINITY;
@@ -77,12 +76,12 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 			N.setInfo("unvisited");
 		}
 		//initializes the priority queue and strart first node
-		PriorityQueue<node_data> que = new PriorityQueue<node_data>();
+		PriorityQueue<NodeData> que = new PriorityQueue<NodeData>();
 		node.setInfo("visited");
 		node.setWeight(0.0);
-		System.out.println(que.size());
+		//System.out.println(que.size());
 		que.add(node);
-		System.out.println(que.size());
+		//System.out.println(que.size());
 		nodeCounter++;
 		//standard algo for going through all nodes in graph
 		while (!que.isEmpty()) {
@@ -94,7 +93,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 			for (node_data nex : Nis) {
 
 				if (nex.getInfo().equals("unvisited")) {
-					que.add(nex);
+					que.add((NodeData) nex);
 					nodeCounter++;
 					nex.setInfo("visiting");
 				}
@@ -196,29 +195,38 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
 	@Override
 	public double shortestPathDist(int src, int dest) {
-		if (src == dest) return 1;
-		nodeCounter = 0;
-		NodeData n= (NodeData)gr.getNode(src);
-		Dijkstra(n);
-		return gr.getNode(dest).getWeight();
-		
+		if (gr.getNode(src) != null)
+		{
+			if (src == dest) return 1;
+			nodeCounter = 0;
+			NodeData node = (NodeData) gr.getNode(src);
+			Dijkstra(node);
+			return gr.getNode(dest).getWeight();
+		}
+		return -1;
 	}
 
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
-		Stack<node_data> st = new Stack<node_data>();
-		Dijkstra((NodeData) gr.getNode(src));
-		node_data n = gr.getNode(dest);
-		while (n != null) {
-			st.add(n);
-			n = fathers.get(n);
+
+		if (gr.getNode(src) != null)
+		{
+			Stack<node_data> st = new Stack<node_data>();
+			NodeData node = (NodeData) gr.getNode(src);
+			Dijkstra(node);
+			node_data n = gr.getNode(dest);
+			while (n != null) {
+				st.add(n);
+				n = fathers.get(n);
+			}
+			//flips the order to be correct
+			List<node_data> temp = new ArrayList<node_data>(st.size());
+			while (!st.isEmpty()) {
+				temp.add(st.pop());
+			}
+			return temp;
 		}
-		//flips the order to be correct
-		List<node_data> temp = new ArrayList<node_data>(st.size());
-		while (!st.isEmpty()) {
-			temp.add(st.pop());
-		}
-		return temp;
+		return null;
 	}
 	/*
     @Override
