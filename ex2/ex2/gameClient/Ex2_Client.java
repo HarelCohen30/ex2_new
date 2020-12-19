@@ -10,6 +10,7 @@ import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,6 +18,9 @@ public class Ex2_Client implements Runnable{
 	private static MyFrame _win;
 	private static Arena _ar;
 	private static ArrayList<CL_Pokemon> cl_fs = new ArrayList<CL_Pokemon>();
+	private static HashMap <Integer, List<node_data>> path = new HashMap<Integer, List<node_data>>();
+	private static int prev_node = 0;
+	private static int dt = 150;
 
 	public static void main(String[] a) {
 		Thread client = new Thread(new Ex2_Client());
@@ -29,8 +33,8 @@ public class Ex2_Client implements Runnable{
 		int scenario_num = 0;
 		//  while (scenario_num < 24) {
 		game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
-		//int id = 999;
-		//game.login(id);
+		int id = 205805534;
+		game.login(id);
 		//        game_service game1 = new Game_ServerEx2();
 		//        game1= (Game_ServerEx2) game;
 		//        game1.level(scenario_num);
@@ -46,9 +50,11 @@ public class Ex2_Client implements Runnable{
 		game.startGame();
 		_win.setTitle("Ex2 - OOP: (NONE trivial Solution) " + game.toString());
 		int ind = 0;
-		long dt = 300;
-
-		while (game.isRunning()) {
+		//long dt = 150;
+		//int i = 0;
+		//while (i<100)
+		//{
+			while (game.isRunning()) {
 			cl_fs = Arena.json2Pokemons(game.getPokemons());
 			for(int a = 0;a<cl_fs.size();a++)
 			{
@@ -66,6 +72,8 @@ public class Ex2_Client implements Runnable{
 			}
 
 		}
+
+		//i++;
 		String res = game.toString();
 		System.out.println(res);
 		System.exit(0);
@@ -95,7 +103,26 @@ public class Ex2_Client implements Runnable{
 			int src = ag.getSrcNode();
 			double v = ag.getValue();
 			if(dest==-1) {
-				dest = nextNode(gg, src);
+				List<node_data> list_path = new ArrayList<node_data>();
+				list_path = path.get(id);
+
+				if (list_path!=null && !list_path.isEmpty())
+				{
+					dest = list_path.get(0).getKey();
+					list_path.remove(0);
+				}
+				else 
+				{
+					dest = nextNode(gg, src,ag);
+				}
+				if (dest==prev_node)
+				{
+					dt=2;
+				}
+				else 
+				{
+					dt = 150;
+				}
 				game.chooseNextEdge(ag.getID(), dest);
 				System.out.println("Agent: "+id+", val: "+v+"   turned to node: "+dest);
 			}
@@ -107,25 +134,41 @@ public class Ex2_Client implements Runnable{
 	 * @param src
 	 * @return
 	 */
-	private static int nextNode(directed_weighted_graph g, int src) {
+	private static int nextNode(directed_weighted_graph g, int src,CL_Agent ag) {
 
+		prev_node=src;
 		double closest_node_dist=100;
-		//Collection<edge_data> ee = g.getE(src);
+		Collection<edge_data> ee = g.getE(src);
 		dw_graph_algorithms gr= new DWGraph_Algo();
 		gr.init(g);
 		List<node_data> shp= new ArrayList<node_data>();
 		for(CL_Pokemon po:cl_fs){
+			if (ag.getSrcNode()==po.get_edge().getDest())
+			{
+				return po.get_edge().getSrc();	
+			}
 			int pokemon_dest = po.get_edge().getDest();
 			double dist = gr.shortestPathDist(src,pokemon_dest);
 			if(closest_node_dist > dist)
 			{
 				closest_node_dist=dist;
 				shp=gr.shortestPath(src,pokemon_dest);
+				/*System.out.println("dist = " + dist);
+				for(int i=0;i<shp.size()-1;i++)
+				{
+					double w = g.getEdge(shp.get(i).getKey(),shp.get(i+1).getKey()).getWeight();
+					System.out.println(shp.get(i).getKey() + " " + w);
+				}*/
 			}
 		}
 		if (shp.size()>1)
 		{		
-			return shp.get(1).getKey();
+			int d = shp.get(1).getKey();
+			shp.remove(1);
+			shp.remove(0);
+			//path.remove(ag);
+			path.put(ag.getID(), shp);
+			return d;
 		}
 		return shp.get(0).getKey();
 
